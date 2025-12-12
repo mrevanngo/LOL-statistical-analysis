@@ -83,7 +83,7 @@ The table below compares aggregate statistics between Eastern and Western region
 
 | Region | Total Games | Games Behind @15 | Comebacks | Comeback Rate |
 |--------|-------------|-------------------|------------------|-----------|---------------|
-| Eastern | 934 | 233| 35 | ~15% |
+| Eastern | 934 | 233 | 35 | ~15% |
 | Western | 1584 | 461 | 96 | ~21% |
 
 Win rates by gold deficit category reveal how the magnitude of the deficit affects comeback probability:
