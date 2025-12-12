@@ -81,10 +81,10 @@ The relationship between gold difference at 15 minutes and win rate shows a clea
 
 The table below compares aggregate statistics between Eastern and Western regions:
 
-| Region | Total Games | Avg Gold Diff @15 | Games Behind @15 | Comebacks | Comeback Rate |
+| Region | Total Games | Games Behind @15 | Comebacks | Comeback Rate |
 |--------|-------------|-------------------|------------------|-----------|---------------|
-| Eastern | 934 | 0.0 | 233| 35 | ~15% |
-| Western | 1584 | 0.0 | 461 | 96 | ~21% |
+| Eastern | 934 | 233| 35 | ~15% |
+| Western | 1584 | 461 | 96 | ~21% |
 
 Win rates by gold deficit category reveal how the magnitude of the deficit affects comeback probability:
 
