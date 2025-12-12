@@ -177,9 +177,7 @@ The conclusion from this test informs our understanding of whether regional play
 
 **Type**: Binary Classification
 
-**Response Variable**: `result` (1 = win, 0 = loss)
-
-**Why this response variable?** We want to predict comebacks—whether a team can overcome a gold deficit. The `result` column directly captures this outcome.
+**Target Variable**: `result` (1 = win, 0 = loss)
 
 **Evaluation Metric**: F1-Score
 
