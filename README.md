@@ -83,19 +83,19 @@ The table below compares aggregate statistics between Eastern and Western region
 
 | Region | Total Games | Avg Gold Diff @15 | Games Behind @15 | Comebacks | Comeback Rate |
 |--------|-------------|-------------------|------------------|-----------|---------------|
-| Eastern | ~2,500 | ~0 | ~750 | ~280 | ~37% |
-| Western | ~3,200 | ~0 | ~950 | ~330 | ~35% |
+| Eastern | 934 | 0.0 | 233| 35 | ~15% |
+| Western | 1584 | 0.0 | 461 | 96 | ~21% |
 
 Win rates by gold deficit category reveal how the magnitude of the deficit affects comeback probability:
 
 | Deficit Category | Win Rate |
 |------------------|----------|
-| Large Deficit (< -3k) | ~15% |
-| Medium Deficit (-3k to -1.5k) | ~30% |
-| Small Deficit (-1.5k to 0) | ~45% |
-| Small Lead (0 to 1.5k) | ~55% |
-| Medium Lead (1.5k to 3k) | ~70% |
-| Large Lead (> 3k) | ~85% |
+| Large Deficit (< -3k) | ~10% |
+| Medium Deficit (-3k to -1.5k) | ~22% |
+| Small Deficit (-1.5k to 0) | ~38% |
+| Small Lead (0 to 1.5k) | ~62% |
+| Medium Lead (1.5k to 3k) | ~78% |
+| Large Lead (> 3k) | ~90% |
 
 ---
 
@@ -105,7 +105,7 @@ Win rates by gold deficit category reveal how the magnitude of the deficit affec
 
 The `golddiffat15` column (and other @15 minute statistics) are likely **Not Missing At Random (NMAR)**. The missingness is related to the values themselves for the following reasons:
 
-1. **Games ending before 15 minutes**: Some professional games end in very fast stomps or early surrenders, meaning 15-minute statistics never existed for these matches.
+1. **Games ending before 15 minutes**: Some professional games end in very fast stomps or due to technical difficulties, meaning 15-minute statistics never existed for these matches.
 
 2. **Data collection differences by league**: Some leagues have incomplete data collection infrastructure, and this incompleteness may correlate with regional characteristics.
 
@@ -159,8 +159,8 @@ We used a permutation test with 10,000 iterations. Under the null hypothesis, th
 
 The observed difference in comeback rates between Eastern and Western leagues was compared against the null distribution. Based on the p-value obtained from the permutation test:
 
-- If p-value < 0.05: We reject the null hypothesis and conclude that Eastern leagues have a statistically significantly higher comeback rate.
-- If p-value ≥ 0.05: We fail to reject the null hypothesis and conclude that there is no significant difference in comeback rates between regions.
+- P-value: 0.9731
+- We fail to reject the null hypothesis and conclude that there is no significant difference in comeback rates between regions.
 
 The conclusion from this test informs our understanding of whether regional playstyle differences actually translate to measurable performance differences when playing from behind.
 
@@ -207,10 +207,10 @@ The baseline model uses a **Decision Tree Classifier** with `max_depth=5` to pre
 
 | Metric | Training Set | Test Set |
 |--------|--------------|----------|
-| Accuracy | ~0.65 | ~0.63 |
-| F1-Score | ~0.45 | ~0.42 |
-| Precision | ~0.50 | ~0.48 |
-| Recall | ~0.40 | ~0.38 |
+| Accuracy | ~0.86 | ~0.82 |
+| F1-Score | ~0.22 | ~0.08 |
+| Precision | ~1.00 | ~0.29 |
+| Recall | ~0.13 | ~0.04 |
 
 ### Assessment
 
@@ -249,13 +249,17 @@ The final model expands the feature set to capture more nuanced aspects of game 
 
 ### Model Algorithm and Hyperparameter Tuning
 
-The final model uses a **Random Forest Classifier**, chosen for its ability to capture non-linear relationships and feature interactions while being robust to overfitting.
+The final model uses a **Random Forest Classifier** with `class_weight='balanced'` to address the imbalanced nature of comeback prediction.
 
 **Hyperparameters tuned via GridSearchCV** (5-fold cross-validation, optimizing F1-score):
-- `n_estimators`: [50, 100, 200]
-- `max_depth`: [5, 10, 15, None]
-- `min_samples_split`: [2, 5, 10]
-- `min_samples_leaf`: [1, 2, 4]
+- `n_estimators`: [100, 150, 200]
+- `max_depth`: [3, 5, 7] — Shallow trees to prevent overfitting
+- `min_samples_split`: [10, 20, 30] — Higher values for regularization
+- `min_samples_leaf`: [5, 10, 15] — Higher values to prevent memorizing training data
+
+**Key Design Decision: Regularization**
+
+Early experiments with deeper trees (max_depth=15) and fewer samples per leaf resulted in severe overfitting—near-perfect training performance but worse-than-baseline test performance. The regularized hyperparameter grid constrains the model complexity, ensuring it learns generalizable patterns rather than memorizing training examples.
 
 **Encoding**:
 - Quantitative features: `StandardScaler`
@@ -263,13 +267,28 @@ The final model uses a **Random Forest Classifier**, chosen for its ability to c
 
 ### Performance Comparison
 
-| Model | F1-Score (Test) | Accuracy (Test) |
-|-------|-----------------|-----------------|
-| Baseline (Decision Tree) | ~0.42 | ~0.63 |
-| Final (Random Forest) | ~0.52 | ~0.70 |
-| **Improvement** | **~24%** | **~11%** |
+| Model | Accuracy (Test) | F1-Score (Test) | Precision (Test) | Recall (Test) |
+|-------|-----------------|-----------------|------------------|---------------|
+| Baseline (Decision Tree) | 0.8185 | 0.0755 | 0.2857 | 0.0435 |
+| Final (Random Forest) | 0.5333 | 0.3298 | 0.2183 | 0.6739 |
+| **Change** | -34.9% | **+337.0%** | -23.6% | **+1449.2%** |
 
-The final model shows substantial improvement over the baseline, particularly in F1-score, which is our primary evaluation metric.
+### Interpreting the Results: Why Lower Accuracy is Actually Better
+
+At first glance, the drop in accuracy from 81.85% to 53.33% might seem concerning. However, this actually represents a **significant improvement** in the model's usefulness. Here's why:
+
+**The Problem with High Accuracy on Imbalanced Data:**
+
+Comebacks are the minority class—only about 19% of games where teams are 1,500+ gold behind result in a comeback. A naive model that predicts "no comeback" for every single game would achieve approximately 81% accuracy simply by always guessing the majority class. This is essentially what the baseline model was doing, as evidenced by its abysmal recall of 4.35%.
+
+**What the Final Model Does Differently:**
+
+The final model, with `class_weight='balanced'`, is now willing to predict comebacks. The dramatic improvement in recall (from 4.35% to 67.39%) means the model now correctly identifies **two-thirds of actual comebacks**, compared to barely any before.
+
+**Why F1-Score is the Right Metric:**
+
+F1-score balances precision and recall, making it ideal for imbalanced classification. The 337% improvement in F1-score confirms that the final model is genuinely better at the task of predicting comebacks, despite the lower accuracy.
+
 
 ---
 
@@ -306,17 +325,12 @@ We conducted a permutation test with 1,000 iterations, shuffling the region labe
 
 Based on the p-value from the permutation test:
 
-- If p-value < 0.05: We reject the null hypothesis and conclude the model has significantly different precision between regions, indicating potential unfairness.
-- If p-value ≥ 0.05: We fail to reject the null hypothesis and conclude there is no significant difference in precision, suggesting the model is fair across regions.
+- P-value: 0.6510
+- We fail to reject the null hypothesis and conclude there is no significant difference in precision, suggesting the model is fair across regions.
 
 ### Implications
 
 If the model is **fair**, it can be trusted equally for predictions on both Eastern and Western league games.
-
-If the model is **unfair**, this could indicate:
-- Training data imbalance between regions
-- Different gameplay patterns that the model captures differently
-- Need for region-specific models or additional features
 
 Understanding model fairness is crucial for ensuring that stakeholders from different regions receive equally reliable predictions.
 
