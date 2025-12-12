@@ -163,11 +163,9 @@ The observed difference in comeback rates between Eastern and Western leagues wa
 
 ### Conclusion
 
-Based on the p-value obtained from the permutation test:
+Based on the p-value obtained from the permutation test, we **fail to reject the null hypothesis** and conclude that there is no statistically significant difference in comeback rates between Eastern and Western regions.
 
-- We fail to reject the null hypothesis and conclude that there is no significant difference in comeback rates between regions.
-
-The conclusion from this test informs our understanding of whether regional playstyle differences actually translate to measurable performance differences when playing from behind.
+This informs us that regional playstyle differences **do not necessarily translate** to measurable performance differences when playing from behind. Despite common perceptions that Eastern teams (LCK, LPL) may be more patient or disciplined in deficit situations, the data does not support the claim that they are significantly better at executing comebacks than Western teams (LCS, LEC, CBLOL).
 
 ---
 
@@ -325,8 +323,8 @@ We conducted a permutation test with 1,000 iterations, shuffling the region labe
 
 ### Conclusion
 
-Based on the p-value from the permutation test:
+Based on the p-value of 0.6510 (greater than our significance level of 0.05), we **fail to reject the null hypothesis**. There is no statistically significant difference in precision between Eastern and Western leagues, suggesting the model is **fair across regions**.
 
-- We fail to reject the null hypothesis and conclude there is no significant difference in precision, suggesting the model is fair across regions.
+This means that when the model predicts a comeback, it is equally reliable regardless of whether the game is from an Eastern league (LCK, LPL) or a Western league (LCS, LEC, CBLOL). Analysts and coaches from both regions can trust the model's predictions with similar confidence, and there is no evidence of regional bias in the model's performance.
 
 ---
