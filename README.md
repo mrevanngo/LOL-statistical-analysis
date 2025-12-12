@@ -157,9 +157,14 @@ We used a permutation test with 10,000 iterations. Under the null hypothesis, th
 
 <iframe src="assets/hypothesis_test.html" width="800" height="500" frameborder="0"></iframe>
 
-The observed difference in comeback rates between Eastern and Western leagues was compared against the null distribution. Based on the p-value obtained from the permutation test:
+The observed difference in comeback rates between Eastern and Western leagues was compared against the null distribution. 
 
 - P-value: 0.9731
+
+### Conclusion
+
+Based on the p-value obtained from the permutation test:
+
 - We fail to reject the null hypothesis and conclude that there is no significant difference in comeback rates between regions.
 
 The conclusion from this test informs our understanding of whether regional playstyle differences actually translate to measurable performance differences when playing from behind.
@@ -318,9 +323,12 @@ We conducted a permutation test with 1,000 iterations, shuffling the region labe
 
 <iframe src="assets/fairness_analysis.html" width="800" height="500" frameborder="0"></iframe>
 
+- P-value: 0.6510
+
+### Conclusion
+
 Based on the p-value from the permutation test:
 
-- P-value: 0.6510
 - We fail to reject the null hypothesis and conclude there is no significant difference in precision, suggesting the model is fair across regions.
 
 ---
