@@ -214,13 +214,11 @@ The baseline model uses a **Decision Tree Classifier** with `max_depth=5` to pre
 
 ### Assessment
 
-The baseline model achieves **moderate performance**. It performs better than random guessing but has significant room for improvement. The relatively low F1-score indicates the model can identify some comebacks but misses many. This is expected given:
+The baseline model achieves **decent accuracy (81.85%)** but **very poor F1-score (0.0755)**. This discrepancy reveals an important issue: the model is essentially predicting "no comeback" for almost every game.
 
-1. Only 2 features are used (gold and XP difference)
-2. No hyperparameter tuning was performed
-3. Categorical features like league and side were not included
+Because comebacks are the minority class—only about **16% of games** where teams are 1,500+ gold behind result in a comeback—a model that always predicts "loss" would achieve ~84% accuracy by default. The baseline's extremely low recall (0.0435) confirms this—it only identifies about 4% of actual comebacks.
 
-The model provides a reasonable starting point for improvement in the final model.
+In other words, the baseline model is not good and performs slightly worse than a naive model that predicts "no comeback" every time.
 
 ---
 
@@ -275,11 +273,8 @@ Early experiments with deeper trees (max_depth=15) and fewer samples per leaf re
 
 ### Interpreting the Results: Why Lower Accuracy is Actually Better
 
-At first glance, the drop in accuracy from 81.85% to 53.33% might seem concerning. However, this actually represents a **significant improvement** in the model's usefulness. Here's why:
+At first glance, the drop in accuracy from 81.85% to 53.33% might seem concerning. However, this actually represents an **improvement** in the model's usefulness.
 
-**The Problem with High Accuracy on Imbalanced Data:**
-
-Comebacks are the minority class—only about 19% of games where teams are 1,500+ gold behind result in a comeback. A naive model that predicts "no comeback" for every single game would achieve approximately 81% accuracy simply by always guessing the majority class. This is essentially what the baseline model was doing, as evidenced by its abysmal recall of 4.35%.
 
 **What the Final Model Does Differently:**
 
@@ -287,7 +282,7 @@ The final model, with `class_weight='balanced'`, is now willing to predict comeb
 
 **Why F1-Score is the Right Metric:**
 
-F1-score balances precision and recall, making it ideal for imbalanced classification. The 337% improvement in F1-score confirms that the final model is genuinely better at the task of predicting comebacks, despite the lower accuracy.
+F1-score balances precision and recall, making it ideal for imbalanced classification. The 337% improvement in F1-score confirms that the final model is better at the task of predicting comebacks, despite the lower accuracy.
 
 
 ---
@@ -327,11 +322,5 @@ Based on the p-value from the permutation test:
 
 - P-value: 0.6510
 - We fail to reject the null hypothesis and conclude there is no significant difference in precision, suggesting the model is fair across regions.
-
-### Implications
-
-If the model is **fair**, it can be trusted equally for predictions on both Eastern and Western league games.
-
-Understanding model fairness is crucial for ensuring that stakeholders from different regions receive equally reliable predictions.
 
 ---
