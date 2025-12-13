@@ -103,15 +103,11 @@ Win rates by gold deficit category reveal how the magnitude of the deficit affec
 
 ### NMAR Analysis
 
-The `golddiffat15` column (and other @15 minute statistics) are likely **Not Missing At Random (NMAR)**. The missingness is related to the values themselves for the following reasons:
+The `golddiffat15` column is likely **Not Missing At Random (NMAR)**. The missingness is related to the values themselves for the following reasons:
 
-1. **Games ending before 15 minutes**: Some professional games end in very fast stomps or due to technical difficulties, meaning 15-minute statistics never existed for these matches.
+1. **Games ending before 15 minutes**: Some professional games end in very fast stomps, technical difficulties, or forfeits, meaning 15-minute statistics never existed for these matches.
 
-2. **Data collection differences by league**: Some leagues have incomplete data collection infrastructure, and this incompleteness may correlate with regional characteristics.
-
-3. **Self-referential missingness**: The missingness depends on game length, which is itself related to how the early game unfolds—the very information we're trying to capture.
-
-Additional data that could help explain the missingness and potentially make it MAR includes exact game end times and data collection methodology by league.
+2. **Data collection differences by league**: Some leagues may have incomplete data collection and different data collection methods.
 
 ### Missingness Dependency
 
@@ -121,19 +117,19 @@ We conducted permutation tests to determine whether the missingness of `golddiff
 
 - **Null Hypothesis**: The distribution of `league` is the same when `golddiffat15` is missing vs. not missing.
 - **Test Statistic**: Total Variation Distance (TVD)
-- **Result**: p-value < 0.05, indicating that missingness **does depend on league**.
+**P-value**: 0.0
+- **Result**: p-value < 0.05, indicating that the missingness of `golddiffat15` **does depend on league**.
 
 <iframe src="assets/missingness_league.html" width="800" height="400" frameborder="0"></iframe>
 
-**Test 2: Missingness vs. Game Length**
+**Test 2: Missingness vs. Barons**
 
-- **Null Hypothesis**: The mean `gamelength` is the same when `golddiffat15` is missing vs. not missing.
+- **Null Hypothesis**: The mean of `barons` is the same when `golddiffat15` is missing vs. not missing.
 - **Test Statistic**: Absolute difference in means
-- **Result**: p-value < 0.05, indicating that missingness **does depend on game length**.
+- **P-value**: 0.232
+- **Result**: p-value > 0.05, indicating that missingness of `golddiffat15` **does not depend on barons**.
 
-<iframe src="assets/missingness_gamelength.html" width="800" height="400" frameborder="0"></iframe>
-
-These results confirm that the missingness of 15-minute statistics is related to both the league and the length of the game, supporting our NMAR hypothesis.
+<iframe src="assets/missingness_barons.html" width="800" height="400" frameborder="0"></iframe>
 
 ---
 
