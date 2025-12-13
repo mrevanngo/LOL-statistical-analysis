@@ -107,7 +107,7 @@ The `golddiffat15` column is likely **Not Missing At Random (NMAR)**. The missin
 
 1. **Games ending before 15 minutes**: Some professional games end in very fast stomps, technical difficulties, or forfeits, meaning 15-minute statistics never existed for these matches.
 
-2. **Data collection differences by league**: Some leagues may have incomplete data collection and different data collection methods.
+2. **Data collection differences by league**: Some leagues may have incomplete data collection and/or different data collection methods.
 
 ### Missingness Dependency
 
@@ -211,9 +211,9 @@ The baseline model uses a **Decision Tree Classifier** with `max_depth=5` to pre
 
 ### Assessment
 
-The baseline model achieves **decent accuracy (81.85%)** but **very poor F1-score (0.0755)**. This discrepancy reveals an important issue: the model is essentially predicting "no comeback" for almost every game.
+The baseline model achieves **subpar accuracy (81.85%)** and **poor F1-score (0.0755)**.
 
-Because comebacks are the minority class—only about **16% of games** where teams are 1,500+ gold behind result in a comeback—a model that always predicts "loss" would achieve ~84% accuracy by default. The baseline's extremely low recall (0.0435) confirms this—it only identifies about 4% of actual comebacks.
+Because comebacks are the minority class—only about **16% of games** where teams are 1,500+ gold behind result in a comeback—a model that always predicts "loss" would achieve ~84% accuracy by default. Moreover, the baseline's extremely low recall (0.0435) confirms it only identifies about 4% of actual comebacks.
 
 In other words, the baseline model is not good and performs slightly worse than a naive model that predicts "no comeback" every time.
 
@@ -229,7 +229,7 @@ The final model expands the feature set to capture more nuanced aspects of game 
 - `golddiffat15`, `xpdiffat15`, `csdiffat15`: Resource differences
 - `killsat15`, `deathsat15`, `assistsat15`: Combat performance
 - `kda_at_15` (engineered): (kills + assists) / (deaths + 1)
-- `gold_deficit_magnitude` (engineered): |golddiffat15|
+- `xp_gold_ratio` (engineered): (xp) / (gold - 1)
 
 **Categorical Features (2 total)**:
 - `league`: Different leagues have different playstyles and metas
@@ -239,8 +239,9 @@ The final model expands the feature set to capture more nuanced aspects of game 
 
 - **KDA ratio**: Teams behind in gold but with good KDA may have better teamfight potential, indicating they lost gold through macro mistakes rather than combat ability.
 - **League**: Different regions have different metas; Eastern leagues may be more patient and better at scaling into late game.
-- **Gold deficit magnitude**: The size of the deficit matters—a 1,500 gold deficit is easier to overcome than a 5,000 gold deficit.
-- **Side**: Blue side has certain objective advantages that may affect comeback potential.
+- **XP to Gold ratio**: Teams with a lower XP-Gold ratio indicate that they are relatively even
+in experience though behind in gold, showing promising fighting potential.
+- **Side**: Blue side has slight map advantages that may conitrubte to comeback potential.
 
 ### Model Algorithm and Hyperparameter Tuning
 
@@ -265,17 +266,17 @@ Early experiments with deeper trees (max_depth=15) and fewer samples per leaf re
 | Model | Accuracy (Test) | F1-Score (Test) | Precision (Test) | Recall (Test) |
 |-------|-----------------|-----------------|------------------|---------------|
 | Baseline (Decision Tree) | 0.8185 | 0.0755 | 0.2857 | 0.0435 |
-| Final (Random Forest) | 0.5333 | 0.3298 | 0.2183 | 0.6739 |
-| **Change** | -34.9% | **+337.0%** | -23.6% | **+1449.2%** |
+| Final (Random Forest) | 0.5778 | 0.3372 | 0.2302 | 0.6304 |
+| **Change** | -29.4% | **+346.6%** | -19.4% | **+1349.4** |
 
-### Interpreting the Results: Why Lower Accuracy is Actually Better
+### Interpreting the Results
 
-At first glance, the drop in accuracy from 81.85% to 53.33% might seem concerning. However, this actually represents an **improvement** in the model's usefulness.
+At first glance, the drop in accuracy from 81.85% to 57.78% might seem concerning. However, the new F1-score represents a significant **improvement** in the model's usefulness.
 
 
 **What the Final Model Does Differently:**
 
-The final model, with `class_weight='balanced'`, is now willing to predict comebacks. The dramatic improvement in recall (from 4.35% to 67.39%) means the model now correctly identifies **two-thirds of actual comebacks**, compared to barely any before.
+The final model is now willing to predict comebacks. The dramatic improvement in recall (from 4.35% to 63.04%) means the model now correctly identifies close to **two-thirds of actual comebacks**, compared to barely any before.
 
 **Why F1-Score is the Right Metric:**
 
