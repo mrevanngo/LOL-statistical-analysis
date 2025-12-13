@@ -82,7 +82,7 @@ The relationship between gold difference at 15 minutes and win rate shows a clea
 The table below compares aggregate statistics between Eastern and Western regions:
 
 | Region | Total Games | Games Behind @15 | Comebacks | Comeback Rate |
-|--------|-------------|-------------------|------------------|-----------|---------------|
+|--------|-------------|-------------------|------------------|-----------|
 | Eastern | 934 | 233 | 35 | ~15% |
 | Western | 1584 | 461 | 96 | ~21% |
 
@@ -175,7 +175,7 @@ This informs us that regional playstyle differences **do not necessarily transla
 
 **Evaluation Metric**: F1-Score
 
-**Why F1-Score?** The data is imbalanced--comebacks are relatively rare (teams behind at 15 minutes win less than 50% of the time). Accuracy alone would be misleading, as a model predicting "always lose" would achieve decent accuracy but be useless. F1-Score balances precision and recall, making it appropriate for imbalanced classification.
+**Why F1-Score?** The data is imbalanced--comebacks are relatively rare (teams behind at 15 minutes comeback only 16% of the time). Accuracy alone would be misleading, as a model predicting "always lose" would achieve an accuracy of 84% but be useless. F1-Score balances precision and recall, making it appropriate for imbalanced classification.
 
 **Features Available at Time of Prediction** (all known at 15 minutes):
 - `golddiffat15`: Gold difference
@@ -241,7 +241,7 @@ The final model expands the feature set to capture more nuanced aspects of game 
 - **League**: Different regions have different metas; Eastern leagues may be more patient and better at scaling into late game.
 - **XP to Gold ratio**: Teams with a lower XP-Gold ratio indicate that they are relatively even
 in experience though behind in gold, showing promising fighting potential.
-- **Side**: Blue side has slight map advantages that may conitrubte to comeback potential.
+- **Side**: Blue side has slight map advantages that may contribute to comeback potential.
 
 ### Model Algorithm and Hyperparameter Tuning
 
