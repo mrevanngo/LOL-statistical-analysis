@@ -10,7 +10,7 @@ League of Legends (LoL) is a multiplayer online battle arena (MOBA) game develop
 
 In professional League of Legends, the early game often sets the tone for the entire match. Teams that establish gold leads by the 15-minute mark typically have significant advantages in itemization, map control, and objective pressure. However, the game is designed with comeback mechanics, and skilled teams can overcome early deficits through superior teamfighting, objective control, and late-game scaling.
 
-This analysis focuses on **"comeback" games**—matches where a team overcomes a meaningful gold deficit at the 15-minute mark to ultimately win. We define a "meaningful deficit" as being at least **1,500 gold behind**, which represents roughly one item component and filters out trivial differences that could swing with a single kill.
+This analysis focuses on **"comeback" games**--matches where a team overcomes a meaningful gold deficit at the 15-minute mark to ultimately win. We define a "meaningful deficit" as being at least **1,500 gold behind**, which represents roughly one item component and filters out trivial differences that could swing with a single kill.
 
 ### Central Question
 
@@ -42,7 +42,7 @@ The data cleaning process involved several key steps:
 
 1. **Filtered for team-level rows** by selecting only rows where `position == 'team'`, reducing the dataset to team summaries rather than individual player statistics.
 
-2. **Filtered for Tier-One leagues** (LCK, LPL, LCS, LEC, CBLOL, PCS, VCS) to focus on the highest level of professional play.
+2. **Filtered for Tier-One leagues** (LCK, LPL, LCS, LEC, CBLOL) to focus on the highest level of professional play.
 
 3. **Created comeback-related features:**
    - `behind_at_15`: True if the team's gold difference at 15 minutes was ≤ -1,500
@@ -73,7 +73,7 @@ Examining comeback rates by league reveals interesting regional patterns:
 
 <iframe src="assets/comeback_by_league.html" width="800" height="500" frameborder="0"></iframe>
 
-The relationship between gold difference at 15 minutes and win rate shows a clear positive correlation—teams with larger gold leads at 15 minutes win more frequently. However, teams behind by 1,500-3,000 gold still win approximately 30-40% of their games, demonstrating that comebacks are possible.
+The relationship between gold difference at 15 minutes and win rate shows a clear positive correlation--teams with larger gold leads at 15 minutes win more frequently. However, teams behind by 1,500-3,000 gold still win approximately 30-40% of their games, demonstrating that comebacks are possible.
 
 <iframe src="assets/winrate_vs_gold.html" width="800" height="500" frameborder="0"></iframe>
 
@@ -175,7 +175,7 @@ This informs us that regional playstyle differences **do not necessarily transla
 
 **Evaluation Metric**: F1-Score
 
-**Why F1-Score?** The data is imbalanced—comebacks are relatively rare (teams behind at 15 minutes win less than 50% of the time). Accuracy alone would be misleading, as a model predicting "always lose" would achieve decent accuracy but be useless. F1-Score balances precision and recall, making it appropriate for imbalanced classification.
+**Why F1-Score?** The data is imbalanced--comebacks are relatively rare (teams behind at 15 minutes win less than 50% of the time). Accuracy alone would be misleading, as a model predicting "always lose" would achieve decent accuracy but be useless. F1-Score balances precision and recall, making it appropriate for imbalanced classification.
 
 **Features Available at Time of Prediction** (all known at 15 minutes):
 - `golddiffat15`: Gold difference
@@ -213,7 +213,7 @@ The baseline model uses a **Decision Tree Classifier** with `max_depth=5` to pre
 
 The baseline model achieves **subpar accuracy (81.85%)** and **poor F1-score (0.0755)**.
 
-Because comebacks are the minority class—only about **16% of games** where teams are 1,500+ gold behind result in a comeback—a model that always predicts "loss" would achieve ~84% accuracy by default. Moreover, the baseline's extremely low recall (0.0435) confirms it only identifies about 4% of actual comebacks.
+Because comebacks are the minority class--only about **16% of games** where teams are 1,500+ gold behind result in a comeback--a model that always predicts "loss" would achieve ~84% accuracy by default. Moreover, the baseline's extremely low recall (0.0435) confirms it only identifies about 4% of actual comebacks.
 
 In other words, the baseline model is not good and performs slightly worse than a naive model that predicts "no comeback" every time.
 
@@ -255,7 +255,7 @@ The final model uses a **Random Forest Classifier** with `class_weight='balanced
 
 **Key Design Decision: Regularization**
 
-Early experiments with deeper trees (max_depth=15) and fewer samples per leaf resulted in severe overfitting—near-perfect training performance but worse-than-baseline test performance. The regularized hyperparameter grid constrains the model complexity, ensuring it learns generalizable patterns rather than memorizing training examples.
+Early experiments with deeper trees (max_depth=15) and fewer samples per leaf resulted in severe overfittin--near-perfect training performance but worse-than-baseline test performance. The regularized hyperparameter grid constrains the model complexity, ensuring it learns generalizable patterns rather than memorizing training examples.
 
 **Encoding**:
 - Quantitative features: `StandardScaler`
