@@ -248,10 +248,10 @@ in experience though behind in gold, showing promising fighting potential.
 The final model uses a **Random Forest Classifier** with `class_weight='balanced'` to address the imbalanced nature of comeback prediction.
 
 **Hyperparameters tuned via GridSearchCV** (5-fold cross-validation, optimizing F1-score):
-- `n_estimators`: [100, 150, 200]
-- `max_depth`: [3, 5, 7] — Shallow trees to prevent overfitting
-- `min_samples_split`: [10, 20, 30] — Higher values for regularization
-- `min_samples_leaf`: [5, 10, 15] — Higher values to prevent memorizing training data
+- `n_estimators`: [100, 150, 200] --> Best: 150
+- `max_depth`: [3, 5, 7] --> Best: 3 
+- `min_samples_split`: [10, 15, 20] --> Best: 10 
+- `min_samples_leaf`: [5, 10, 15] --> Best: 15 
 
 **Key Design Decision: Regularization**
 
@@ -267,7 +267,7 @@ Early experiments with deeper trees (max_depth=15) and fewer samples per leaf re
 |-------|-----------------|-----------------|------------------|---------------|
 | Baseline (Decision Tree) | 0.8185 | 0.0755 | 0.2857 | 0.0435 |
 | Final (Random Forest) | 0.5778 | 0.3372 | 0.2302 | 0.6304 |
-| **Change** | -29.4% | **+346.6%** | -19.4% | **+1349.4** |
+| **Change** | -29.4% | **+346.6%** | -19.4% | **+1349.4%** |
 
 ### Interpreting the Results
 
